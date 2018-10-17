@@ -333,6 +333,7 @@ nav h1 a {
     top: 120px;
     padding: 20px 0 20px;
   }
+}
 
 @media screen and (min-width: 802px) {
   #restaurants-list {
