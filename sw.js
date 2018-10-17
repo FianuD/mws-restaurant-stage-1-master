@@ -1,7 +1,7 @@
 /**
  *  Array of file-names for cache
  */
- const cacheFiles = [
+const cacheFiles = [
     './',
     './index.html',
     './restaurant.html',
@@ -10,7 +10,6 @@
     './js/dbhelper.js',
     './js/main.js',
     './js/restaurant_info.js',
-    './js/sw_register.js',
     './img/1.jpg',
     './img/2.jpg',
     './img/3.jpg',
@@ -23,7 +22,6 @@
     './img/10.jpg'
 ];
 
-
 /**
  * Event listener for the installation event
  */
@@ -33,4 +31,30 @@ self.addEventListener('install', function(e){
             return cache.addAll(cacheFiles);
         })
     );
+});
+
+/**
+ * Event listener for the fetch event
+ */
+self.addEventListener('fetch', function(e) {
+	e.respondWith(
+		caches.match(e.request).then(function(response) {
+            if(response) {
+                console.log('Found ', e.request,' in cache');
+                return response;
+            } else {
+                console.log('Could not find, ',e.request,' in cache, FETCHING!');
+                return fetch(e.request)
+                .then(function(response){
+                    caches.open('v1').then(function(cache){
+                        cache.put(e.request, response);
+                    });
+                    return response;
+                })
+                .catch(function(){
+                    console.error(error);
+                });
+            }
+		})
+	);
 });
